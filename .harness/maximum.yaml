@@ -1,0 +1,35 @@
+inputSet:
+  name: maximum
+  tags: {}
+  identifier: maximum
+  orgIdentifier: Harness_Community
+  projectIdentifier: examples
+  pipeline:
+    identifier: custom_delegate
+    properties:
+      ci:
+        codebase:
+          build:
+            type: branch
+            spec:
+              branch: feat/custom-max
+    stages:
+      - stage:
+          identifier: build
+          type: CI
+          spec:
+            execution:
+              steps:
+                - step:
+                    identifier: build_and_push
+                    type: BuildAndPushDockerRegistry
+                    spec:
+                      connectorRef: org.harness_community_dockerhub
+                      repo: harnesscommunity/custom-delegate
+                      tags:
+                        - max
+                      dockerfile: Dockerfile.maximum
+          variables:
+            - name: update_latest_image
+              type: String
+              value: "true"
