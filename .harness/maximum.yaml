@@ -12,7 +12,7 @@ inputSet:
           build:
             type: branch
             spec:
-              branch: feat/custom-max
+              branch: main
     stages:
       - stage:
           identifier: build
@@ -33,3 +33,7 @@ inputSet:
             - name: update_latest_image
               type: String
               value: "true"
+  cacheResponse:
+    cacheState: VALID_CACHE
+    ttlLeft: 2591998731
+    lastUpdatedAt: 1691527513970
