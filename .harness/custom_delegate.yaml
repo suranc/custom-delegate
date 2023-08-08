@@ -1,0 +1,75 @@
+pipeline:
+  name: custom delegate
+  identifier: custom_delegate
+  projectIdentifier: examples
+  orgIdentifier: Harness_Community
+  description: |-
+    build, push, and configure a custom delegate for your harness account.
+
+    the permissions needed for the harness_platform_api_key secret are delegate:edit at the account level.
+  tags: {}
+  properties:
+    ci:
+      codebase:
+        connectorRef: org.harness_community_github
+        repoName: custom-delegate
+        build: <+input>
+  stages:
+    - stage:
+        name: build
+        identifier: build
+        type: CI
+        spec:
+          cloneCodebase: true
+          platform:
+            os: Linux
+            arch: Amd64
+          runtime:
+            type: Cloud
+            spec: {}
+          execution:
+            steps:
+              - step:
+                  type: Run
+                  name: get latest tag
+                  identifier: get_latest_tag
+                  spec:
+                    shell: Sh
+                    command: "export LATEST_TAG=$(curl -s \"https://app.harness.io/ng/api/delegate-setup/latest-supported-version?accountIdentifier=<+account.identifier>\" -H 'x-api-key: <+secrets.getValue(\"org.harness_platform_api_key\")>' | jq -r '.resource.latestSupportedVersion')"
+                    outputVariables:
+                      - name: LATEST_TAG
+                  description: use the api to retrieve the latest delegate tag for your account
+              - step:
+                  type: BuildAndPushDockerRegistry
+                  name: build and push
+                  identifier: build_and_push
+                  spec:
+                    connectorRef: <+input>
+                    repo: <+input>
+                    tags: <+input>
+                    dockerfile: <+input>
+                    buildArgs:
+                      SOURCE_TAG: <+execution.steps.get_latest_tag.output.outputVariables.LATEST_TAG>
+                  when:
+                    stageStatus: Success
+              - step:
+                  type: Run
+                  name: update latest image
+                  identifier: update_latest_image
+                  spec:
+                    shell: Sh
+                    command: |
+                      curl -s -X PUT "https://app.harness.io/ng/api/delegate-setup/override-delegate-tag?accountIdentifier=<+account.identifier>&delegateTag=<+pipeline.stages.build.spec.execution.steps.build_and_push.spec.repo>:<+pipeline.stages.build.spec.execution.steps.build_and_push.spec.tags[0]>" -H 'x-api-key: <+secrets.getValue("org.harness_platform_api_key")>'
+                  description: update your harness account to use the custom delegate image as its latest image for the delegate upgrader
+                  when:
+                    stageStatus: Success
+                    condition: <+stage.variables.update_latest_image>
+          caching:
+            enabled: false
+        variables:
+          - name: update_latest_image
+            type: String
+            default: "false"
+            description: update your harness account to use the custom image
+            required: true
+            value: <+input>.default(false).allowedValues(true,false)
