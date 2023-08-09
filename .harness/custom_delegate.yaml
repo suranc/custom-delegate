@@ -35,7 +35,7 @@ pipeline:
                   identifier: get_latest_tag
                   spec:
                     shell: Sh
-                    command: "export LATEST_TAG=$(curl -s \"https://app.harness.io/ng/api/delegate-setup/latest-supported-version?accountIdentifier=<+account.identifier>\" -H 'x-api-key: <+secrets.getValue(\"org.harness_platform_api_key\")>' | jq -r '.resource.latestSupportedMinimalVersion')"
+                    command: "export LATEST_TAG=$(curl -s \"https://app.harness.io/ng/api/delegate-setup/latest-supported-version?accountIdentifier=<+account.identifier>\" -H 'x-api-key: <+secrets.getValue(\"org.harness_platform_api_key\")>' | jq -r '.resource.latestSupportedVersion')"
                     outputVariables:
                       - name: LATEST_TAG
                   description: use the api to retrieve the latest delegate tag for your account

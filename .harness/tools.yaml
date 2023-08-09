@@ -1,0 +1,35 @@
+inputSet:
+  name: tools
+  identifier: tools
+  orgIdentifier: Harness_Community
+  projectIdentifier: examples
+  pipeline:
+    identifier: custom_delegate
+    properties:
+      ci:
+        codebase:
+          build:
+            type: branch
+            spec:
+              branch: main
+    stages:
+      - stage:
+          identifier: build
+          type: CI
+          spec:
+            execution:
+              steps:
+                - step:
+                    identifier: build_and_push
+                    type: BuildAndPushDockerRegistry
+                    spec:
+                      connectorRef: org.harness_community_dockerhub
+                      repo: harnesscommunity/custom-delegate
+                      tags:
+                        - tools
+                      dockerfile: Dockerfile.tools
+          variables:
+            - name: update_latest_image
+              type: String
+              value: "false"
+  object Object: pipeline.properties.ci.codebase
