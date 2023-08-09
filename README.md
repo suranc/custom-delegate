@@ -7,3 +7,7 @@ This pipeline fetches the lastest supported delegate image for your harness acco
 ## Dockerfile.maximum
 
 This adds all the tools necessary for the Harness platform that are not part of the base image to the minimal delegate. You can remove tools for features you don't use or update versions for your requirements.
+
+## Dockerfile.tools
+
+An example of how to install various tools into your delegate image.
