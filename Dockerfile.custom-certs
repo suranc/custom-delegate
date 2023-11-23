@@ -4,5 +4,6 @@ USER 0
 ADD custom-ca.pem /etc/pki/ca-trust/source/anchors/
 RUN update-ca-trust
 RUN keytool -noprompt -import -trustcacerts -file /etc/pki/ca-trust/source/anchors/custom-ca.pem -alias custom-ca -keystore /opt/java/openjdk/lib/security/cacerts -storepass changeit
+RUN mkdir -p /kaniko/ssl/certs/; cp /etc/ssl/certs/ca-bundle.crt /kaniko/ssl/certs/additional-ca-cert-bundle.crt
 ENV DESTINATION_CA_PATH="/etc/ssl/certs/ca-bundle.crt,/kaniko/ssl/certs/additional-ca-cert-bundle.crt"
 USER 1001
