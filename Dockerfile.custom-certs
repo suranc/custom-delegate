@@ -2,7 +2,6 @@ FROM harness/delegate:23.11.81408
 
 USER 0
 ADD custom-ca.pem /opt/harness-delegate/ca-bundle/custom-ca.pem
-RUN /opt/harness-delegate/load_certificates.sh && rm /opt/harness-delegate/ca-bundle/custom-ca.pem
-ENV ADDITIONAL_CERTS_PATH="/etc/ssl/certs/ca-bundle.crt"
-ENV CI_MOUNT_VOLUMES="/etc/ssl/certs/ca-bundle.crt:/etc/ssl/certs/ca-bundle.crt,/kaniko/ssl/certs/additional-ca-cert-bundle.crt"
+RUN /opt/harness-delegate/load_certificates.sh && cp /etc/ssl/certs/ca-bundle.crt /opt/harness-delegate/ca-bundle/ca.bundle && rm /opt/harness-delegate/ca-bundle/custom-ca.pem
+ENV DESTINATION_CA_PATH="/etc/ssl/certs/ca-bundle.crt,/kaniko/ssl/certs/additional-ca-cert-bundle.crt"
 USER 1001
