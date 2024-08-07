@@ -4,4 +4,6 @@ FROM harness/delegate:$BUILD_TAG
 USER 0
 ADD custom-ca.pem /custom-certs/custom-ca.pem
 RUN /opt/harness-delegate/load_certificates.sh /custom-certs
+ENV ADDITIONAL_CERTS_PATH="/etc/ssl/certs/ca-bundle.crt"
+ENV CI_MOUNT_VOLUMES="/etc/ssl/certs/ca-bundle.crt:/etc/ssl/certs/ca-bundle.crt,/kaniko/ssl/certs/additional-ca-cert-bundle.crt"
 USER 1001
