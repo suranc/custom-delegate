@@ -1,4 +1,4 @@
-dsARG SOURCE_TAG
+ARG SOURCE_TAG
 FROM harness/delegate:$SOURCE_TAG
 
 USER 0
