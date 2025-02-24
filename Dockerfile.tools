@@ -1,11 +1,11 @@
-ARG SOURCE_TAG
+dsARG SOURCE_TAG
 FROM harness/delegate:$SOURCE_TAG
 
 USER 0
 
 # update and install utilities
 RUN microdnf update -y \
-  && microdnf install -y unzip curl jq shadow-utils
+  && microdnf install -y unzip jq shadow-utils
 
 # install kubectl
 RUN curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl" \
